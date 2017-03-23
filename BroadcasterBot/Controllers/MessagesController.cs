@@ -14,6 +14,8 @@ namespace BroadcasterBot.Controllers
         ///     POST: api/Messages
         ///     Receive a message from a user and reply to it
         /// </summary>
+        [Route("api/messages")]
+        [HttpPost]
         public async Task<IHttpActionResult> Post([FromBody] Activity activity, CancellationToken token)
         {
             if (activity.Type == ActivityTypes.Message)
