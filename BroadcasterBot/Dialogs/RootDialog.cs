@@ -6,7 +6,7 @@ using Microsoft.Bot.Connector;
 namespace BroadcasterBot.Dialogs
 {
     [Serializable]
-    public class RootDialog : IDialog<object>
+    public class RootDialog : IDialog
     {
         public Task StartAsync(IDialogContext context)
         {

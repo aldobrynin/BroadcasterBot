@@ -1,5 +1,9 @@
-﻿using System.Web;
+﻿using System.Reflection;
+using System.Web;
 using System.Web.Http;
+using Autofac;
+using Autofac.Integration.WebApi;
+using Microsoft.Bot.Builder.Dialogs.Internals;
 
 namespace BroadcasterBot
 {
@@ -7,7 +11,21 @@ namespace BroadcasterBot
     {
         protected void Application_Start()
         {
-            GlobalConfiguration.Configure(WebApiConfig.Register);
+            var builder = new ContainerBuilder();
+
+            builder.RegisterModule<DialogModule>();
+            builder.RegisterModule<AppModule>();
+
+            var config = GlobalConfiguration.Configuration;
+
+            builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
+
+            builder.RegisterWebApiFilterProvider(config);
+
+            var container = builder.Build();
+            config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
+
+            GlobalConfiguration.Configure(с => с.MapHttpAttributeRoutes());
         }
     }
 }

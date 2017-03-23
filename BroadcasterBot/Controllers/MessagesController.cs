@@ -1,8 +1,8 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
-using BroadcasterBot.Dialogs;
-using Microsoft.Bot.Builder.Dialogs;
+using Autofac;
+using Microsoft.Bot.Builder.Dialogs.Internals;
 using Microsoft.Bot.Connector;
 
 namespace BroadcasterBot.Controllers
@@ -10,6 +10,13 @@ namespace BroadcasterBot.Controllers
     [BotAuthentication]
     public class MessagesController : ApiController
     {
+        private readonly ILifetimeScope _lifetimeScope;
+
+        public MessagesController(ILifetimeScope lifetimeScope)
+        {
+            _lifetimeScope = lifetimeScope;
+        }
+
         /// <summary>
         ///     POST: api/Messages
         ///     Receive a message from a user and reply to it
@@ -19,7 +26,11 @@ namespace BroadcasterBot.Controllers
         public async Task<IHttpActionResult> Post([FromBody] Activity activity, CancellationToken token)
         {
             if (activity.Type == ActivityTypes.Message)
-                await Conversation.SendAsync(activity, () => new RootDialog(), token);
+                using (var scope = DialogModule.BeginLifetimeScope(_lifetimeScope, activity))
+                {
+                    var postToBot = scope.Resolve<IPostToBot>();
+                    await postToBot.PostAsync(activity, token);
+                }
             else
                 HandleSystemMessage(activity);
             return Ok();
