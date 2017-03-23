@@ -25,11 +25,20 @@ namespace BroadcasterBot.Dialogs
         private async Task OnMessageReceived(IDialogContext context, IAwaitable<IMessageActivity> result)
         {
             var activity = await result;
+            if (activity.Text == "exit")
+            {
+                context.Done(true);
+                return;
+            }
             var isBroadcastSuccessfull = await _router.SendToAllUsers(activity);
             if (isBroadcastSuccessfull)
+            {
                 await context.PostAsync("Your message has been broadcasted");
+            }
             else
+            {
                 await context.PostAsync("An error has occured while sending message");
+            }
             context.Wait(OnMessageReceived);
         }
     }

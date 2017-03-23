@@ -19,6 +19,7 @@ namespace BroadcasterBot.MessageRouting
         {
             var users = await _repository.GetAllUsers();
             foreach (var grouping in users.GroupBy(x => x.ServiceUrl))
+            {
                 using (var client = new ConnectorClient(new Uri(grouping.Key)))
                 {
                     foreach (var reference in grouping)
@@ -34,6 +35,7 @@ namespace BroadcasterBot.MessageRouting
                         }
                     }
                 }
+            }
             return true;
         }
 

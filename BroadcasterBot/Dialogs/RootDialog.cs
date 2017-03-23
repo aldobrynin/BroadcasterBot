@@ -41,6 +41,7 @@ namespace BroadcasterBot.Dialogs
             else
             {
                 await context.PostAsync("shhhhh... just listen");
+                context.Wait(MessageReceivedAsync);
             }
         }
 
