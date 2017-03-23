@@ -7,16 +7,18 @@ namespace BroadcasterBot.Data
 {
     public class UsersConversationsRepository : IUsersConversationsRepository
     {
-        private readonly HashSet<ConversationReference> _userReferences = new HashSet<ConversationReference>();
+        private readonly HashSet<SavedConversationDto> _userReferences = new HashSet<SavedConversationDto>();
 
-        public Task<IEnumerable<ConversationReference>> GetAllUsers()
+        public Task<IEnumerable<SavedConversationDto>> GetAllUsers()
         {
             return Task.FromResult(_userReferences.AsEnumerable());
         }
 
-        public Task<bool> AddUser(ConversationReference conversation)
+        public Task<bool> AddUser(SavedConversationDto conversation)
         {
-            return Task.FromResult(_userReferences.Add(conversation));
+            return
+                Task.FromResult(
+                    _userReferences.Add(conversation));
         }
     }
 }

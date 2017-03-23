@@ -119,6 +119,7 @@
     <Compile Include="App_Start\AppModule.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
     <Compile Include="Data\IUsersConversationsRepository.cs" />
+    <Compile Include="Data\SavedConversationDto.cs" />
     <Compile Include="Data\UsersConversationsRepository.cs" />
     <Compile Include="Dialogs\BroadcasterDialog.cs" />
     <Compile Include="Dialogs\Factory\DialogFactory.cs" />

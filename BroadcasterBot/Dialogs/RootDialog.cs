@@ -22,7 +22,10 @@ namespace BroadcasterBot.Dialogs
         public async Task StartAsync(IDialogContext context)
         {
             await context.PostAsync("Welcome!");
-            await _repository.AddUser(context.Activity.ToConversationReference());
+            var conversation = context.Activity.ToConversationReference();
+
+            await _repository.AddUser(new SavedConversationDto(conversation.ServiceUrl, conversation.ChannelId,
+                conversation.Conversation.Id, conversation.Bot.Id, conversation.User.Id));
             context.Wait(MessageReceivedAsync);
         }
 

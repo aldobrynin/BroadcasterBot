@@ -6,7 +6,7 @@ namespace BroadcasterBot.Data
 {
     public interface IUsersConversationsRepository
     {
-        Task<IEnumerable<ConversationReference>> GetAllUsers();
-        Task<bool> AddUser(ConversationReference conversation);
+        Task<IEnumerable<SavedConversationDto>> GetAllUsers();
+        Task<bool> AddUser(SavedConversationDto conversation);
     }
 }

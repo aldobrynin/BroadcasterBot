@@ -37,17 +37,17 @@ namespace BroadcasterBot.MessageRouting
             return true;
         }
 
-        private static Activity CreateActivity(IMessageActivity activity, ConversationReference reference)
+        private static Activity CreateActivity(IMessageActivity activity, SavedConversationDto reference)
         {
             return new Activity
             {
                 Type = ActivityTypes.Message,
                 Text = activity.Text,
-                From = reference.Bot,
-                Recipient = reference.User,
+                From = new ChannelAccount(reference.BotId),
+                Recipient = new ChannelAccount(reference.UserId),
                 ChannelId = reference.ChannelId,
                 ServiceUrl = reference.ServiceUrl,
-                Conversation = reference.Conversation,
+                Conversation = new ConversationAccount(id: reference.ConversationId),
                 Attachments = activity.Attachments,
                 AttachmentLayout = activity.AttachmentLayout,
                 Locale = activity.Locale,
