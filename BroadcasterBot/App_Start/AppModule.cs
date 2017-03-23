@@ -1,6 +1,8 @@
 ﻿using Autofac;
 using BroadcasterBot.Dialogs;
+using BroadcasterBot.Dialogs.Factory;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.Internals.Fibers;
 
 namespace BroadcasterBot
 {
@@ -10,6 +12,13 @@ namespace BroadcasterBot
         {
             base.Load(builder);
             builder.RegisterType<RootDialog>().As<IDialog<object>>().InstancePerDependency();
+            builder.RegisterType<BroadcasterDialog>().AsSelf().InstancePerDependency();
+
+            builder
+                .RegisterType<DialogFactory>()
+                .Keyed<IDialogFactory>(FiberModule.Key_DoNotSerialize)
+                .As<IDialogFactory>()
+                .SingleInstance();
         }
     }
 }
