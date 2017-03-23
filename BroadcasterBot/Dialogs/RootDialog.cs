@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using BroadcasterBot.Data;
 using BroadcasterBot.Dialogs.Factory;
+using Microsoft.Bot.Builder.ConnectorEx;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 
@@ -10,15 +12,17 @@ namespace BroadcasterBot.Dialogs
     public class RootDialog : IDialog
     {
         private readonly IDialogFactory _dialogFactory;
-
-        public RootDialog(IDialogFactory dialogFactory)
+        private readonly IUsersConversationsRepository _repository;
+        public RootDialog(IDialogFactory dialogFactory, IUsersConversationsRepository repository)
         {
             _dialogFactory = dialogFactory;
+            _repository = repository;
         }
 
         public async Task StartAsync(IDialogContext context)
         {
             await context.PostAsync("Welcome!");
+            await _repository.AddUser(context.Activity.ToConversationReference());
             context.Wait(MessageReceivedAsync);
         }
 

@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using BroadcasterBot.Data;
 using BroadcasterBot.Dialogs;
 using BroadcasterBot.Dialogs.Factory;
 using Microsoft.Bot.Builder.Dialogs;
@@ -14,10 +15,17 @@ namespace BroadcasterBot
             builder.RegisterType<RootDialog>().As<IDialog<object>>().InstancePerDependency();
             builder.RegisterType<BroadcasterDialog>().AsSelf().InstancePerDependency();
 
+
             builder
                 .RegisterType<DialogFactory>()
                 .Keyed<IDialogFactory>(FiberModule.Key_DoNotSerialize)
                 .As<IDialogFactory>()
+                .SingleInstance();
+
+            builder
+                .RegisterType<UsersConversationsRepository>()
+                .Keyed<IUsersConversationsRepository>(FiberModule.Key_DoNotSerialize)
+                .As<IUsersConversationsRepository>()
                 .SingleInstance();
         }
     }
