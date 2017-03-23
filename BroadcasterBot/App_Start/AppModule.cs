@@ -9,6 +9,7 @@ namespace BroadcasterBot
         protected override void Load(ContainerBuilder builder)
         {
             base.Load(builder);
+            builder.RegisterType<RootDialog>().As<IDialog<object>>().InstancePerDependency();
         }
     }
 }
