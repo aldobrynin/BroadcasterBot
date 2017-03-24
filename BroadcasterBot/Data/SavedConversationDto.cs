@@ -1,39 +1,49 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace BroadcasterBot.Data
 {
     public class SavedConversationDto : IEquatable<SavedConversationDto>
     {
-        public SavedConversationDto(string serviceUrl, string channelId, string conversationId, string botId,
-            string userId)
-        {
-            ServiceUrl = serviceUrl;
-            ChannelId = channelId;
-            ConversationId = conversationId;
-            BotId = botId;
-            UserId = userId;
-        }
+        public string ServiceUrl { get; set; }
+        public string ChannelId { get; set; }
+        public string ConversationId { get; set; }
+        public string BotId { get; set; }
 
-        public string ServiceUrl { get; }
-        public string ChannelId { get; }
-        public string ConversationId { get; }
-        public string BotId { get; }
-        public string UserId { get; }
+        [Key]
+        public string UserId { get; set; }
 
         public bool Equals(SavedConversationDto other)
         {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return string.Equals(ServiceUrl, other.ServiceUrl) && string.Equals(ChannelId, other.ChannelId) &&
-                   string.Equals(ConversationId, other.ConversationId) && string.Equals(BotId, other.BotId) &&
-                   string.Equals(UserId, other.UserId);
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+            return string.Equals(ServiceUrl, other.ServiceUrl)
+                   && string.Equals(ChannelId, other.ChannelId)
+                   && string.Equals(ConversationId, other.ConversationId)
+                   && string.Equals(BotId, other.BotId)
+                   && string.Equals(UserId, other.UserId);
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+            if (obj.GetType() != GetType())
+            {
+                return false;
+            }
             return Equals((SavedConversationDto) obj);
         }
 

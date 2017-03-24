@@ -1,24 +1,39 @@
 ﻿using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Bot.Connector;
 
 namespace BroadcasterBot.Data
 {
     public class UsersConversationsRepository : IUsersConversationsRepository
     {
-        private readonly HashSet<SavedConversationDto> _userReferences = new HashSet<SavedConversationDto>();
-
         public Task<IEnumerable<SavedConversationDto>> GetAllUsers()
         {
-            return Task.FromResult(_userReferences.AsEnumerable());
+            using (var db = new UsersConversationsContext())
+            {
+                return Task.FromResult(db.UsersConversations.AsEnumerable());
+            }
         }
 
-        public Task<bool> AddUser(SavedConversationDto conversation)
+        public async Task AddUser(SavedConversationDto conversation)
         {
-            return
-                Task.FromResult(
-                    _userReferences.Add(conversation));
+            using (var db = new UsersConversationsContext())
+            {
+                if (db.UsersConversations.Any(x => x.UserId == conversation.UserId) == false)
+                {
+                    db.UsersConversations.Add(conversation);
+                    await db.SaveChangesAsync();
+                }
+            }
         }
+    }
+
+    public class UsersConversationsContext : DbContext
+    {
+        public UsersConversationsContext() : base("Main")
+        {
+        }
+
+        public DbSet<SavedConversationDto> UsersConversations { get; set; }
     }
 }

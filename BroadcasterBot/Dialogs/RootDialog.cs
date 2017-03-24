@@ -13,6 +13,7 @@ namespace BroadcasterBot.Dialogs
     {
         private readonly IDialogFactory _dialogFactory;
         private readonly IUsersConversationsRepository _repository;
+
         public RootDialog(IDialogFactory dialogFactory, IUsersConversationsRepository repository)
         {
             _dialogFactory = dialogFactory;
@@ -24,9 +25,20 @@ namespace BroadcasterBot.Dialogs
             await context.PostAsync("Welcome!");
             var conversation = context.Activity.ToConversationReference();
 
-            await _repository.AddUser(new SavedConversationDto(conversation.ServiceUrl, conversation.ChannelId,
-                conversation.Conversation.Id, conversation.Bot.Id, conversation.User.Id));
+            await _repository.AddUser(MapToDto(conversation));
             context.Wait(MessageReceivedAsync);
+        }
+
+        private static SavedConversationDto MapToDto(ConversationReference conversation)
+        {
+            return new SavedConversationDto
+            {
+                ServiceUrl = conversation.ServiceUrl,
+                ChannelId = conversation.ChannelId,
+                ConversationId = conversation.Conversation.Id,
+                BotId = conversation.Bot.Id,
+                UserId = conversation.User.Id
+            };
         }
 
         private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> result)
