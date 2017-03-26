@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace BroadcasterBot.Data
 {
     public interface IUsersConversationsRepository
     {
-        Task<IEnumerable<SavedConversationDto>> GetAllUsers();
-        Task AddUser(SavedConversationDto conversation);
+        IEnumerable<SavedConversationDto> GetAllUsers();
+        SavedConversationDto FindByUserIdAndChannelId(string userId, string channelId);
+        void AddUser(SavedConversationDto conversation);
     }
 }

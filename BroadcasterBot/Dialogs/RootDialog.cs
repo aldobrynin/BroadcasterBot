@@ -27,7 +27,7 @@ namespace BroadcasterBot.Dialogs
             var conversation = context.Activity.ToConversationReference();
             try
             {
-                await _repository.AddUser(MapToDto(conversation));
+                _repository.AddUser(MapToDto(conversation));
             }
             catch (Exception e)
             {
@@ -45,7 +45,8 @@ namespace BroadcasterBot.Dialogs
                 ChannelId = conversation.ChannelId,
                 ConversationId = conversation.Conversation.Id,
                 BotId = conversation.Bot.Id,
-                UserId = conversation.User.Id
+                UserId = conversation.User.Id,
+                IsBroadcaster = false
             };
         }
 

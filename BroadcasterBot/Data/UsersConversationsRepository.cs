@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace BroadcasterBot.Data
 {
@@ -23,15 +22,15 @@ namespace BroadcasterBot.Data
             GC.SuppressFinalize(this);
         }
 
-        public Task<IEnumerable<SavedConversationDto>> GetAllUsers()
+        public IEnumerable<SavedConversationDto> GetAllUsers()
         {
-            return Task.FromResult(_context.UsersConversations.AsEnumerable());
+            return _context.UsersConversations.Where(x => x.IsBroadcaster == false);
         }
 
-        public async Task AddUser(SavedConversationDto conversation)
+        public void AddUser(SavedConversationDto conversation)
         {
             _context.UsersConversations.AddOrUpdate(conversation);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
         }
 
         protected virtual void Dispose(bool disposing)
@@ -44,6 +43,11 @@ namespace BroadcasterBot.Data
                 }
             }
             _disposed = true;
+        }
+
+        public SavedConversationDto FindByUserIdAndChannelId(string userId, string channelId)
+        {
+            return _context.UsersConversations.SingleOrDefault(x => x.UserId == userId && x.ChannelId == channelId);
         }
     }
 

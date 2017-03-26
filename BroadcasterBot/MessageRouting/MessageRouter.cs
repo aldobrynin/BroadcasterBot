@@ -22,7 +22,7 @@ namespace BroadcasterBot.MessageRouting
 
         public async Task SendToAllUsers(IMessageActivity activity, CancellationToken token = default(CancellationToken))
         {
-            var users = await _repository.GetAllUsers();
+            var users = _repository.GetAllUsers();
             foreach (var grouping in users.GroupBy(x => x.ServiceUrl))
             {
                 //using (var client = new ConnectorClient(new Uri(grouping.Key)))

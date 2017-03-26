@@ -1,17 +1,23 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BroadcasterBot.Data
 {
     public class SavedConversationDto : IEquatable<SavedConversationDto>
     {
         public string ServiceUrl { get; set; }
+        [Key]
+        [Column(Order = 1)]
         public string ChannelId { get; set; }
         public string ConversationId { get; set; }
         public string BotId { get; set; }
 
         [Key]
+        [Column(Order = 0)]
         public string UserId { get; set; }
+
+        public bool IsBroadcaster { get; set; }
 
         public bool Equals(SavedConversationDto other)
         {
