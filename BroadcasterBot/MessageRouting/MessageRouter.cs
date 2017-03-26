@@ -15,7 +15,7 @@ namespace BroadcasterBot.MessageRouting
             _repository = repository;
         }
 
-        public async Task<bool> SendToAllUsers(IMessageActivity activity)
+        public async Task SendToAllUsers(IMessageActivity activity)
         {
             var users = await _repository.GetAllUsers();
             foreach (var grouping in users.GroupBy(x => x.ServiceUrl))
@@ -25,18 +25,10 @@ namespace BroadcasterBot.MessageRouting
                     foreach (var reference in grouping)
                     {
                         var replyActivity = CreateActivity(activity, reference);
-                        try
-                        {
-                            await client.Conversations.SendToConversationAsync(replyActivity);
-                        }
-                        catch (Exception)
-                        {
-                            return false;
-                        }
+                        await client.Conversations.SendToConversationAsync(replyActivity);
                     }
                 }
             }
-            return true;
         }
 
         private static Activity CreateActivity(IMessageActivity activity, SavedConversationDto reference)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using BroadcasterBot.MessageRouting;
 using Microsoft.Bot.Builder.Dialogs;
@@ -30,14 +31,17 @@ namespace BroadcasterBot.Dialogs
                 context.Done(true);
                 return;
             }
-            var isBroadcastSuccessfull = await _router.SendToAllUsers(activity);
-            if (isBroadcastSuccessfull)
+
+            try
             {
+                await _router.SendToAllUsers(activity);
                 await context.PostAsync("Your message has been broadcasted");
             }
-            else
+            catch(Exception e)
             {
+                Trace.TraceError(e.Message);
                 await context.PostAsync("An error has occured while sending message");
+
             }
             context.Wait(OnMessageReceived);
         }

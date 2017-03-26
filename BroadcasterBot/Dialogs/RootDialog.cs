@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using BroadcasterBot.Data;
 using BroadcasterBot.Dialogs.Factory;
@@ -24,8 +25,15 @@ namespace BroadcasterBot.Dialogs
         {
             await context.PostAsync("Welcome!");
             var conversation = context.Activity.ToConversationReference();
-
-            await _repository.AddUser(MapToDto(conversation));
+            try
+            {
+                await _repository.AddUser(MapToDto(conversation));
+            }
+            catch (Exception e)
+            {
+                Trace.TraceError(e.Message);
+                throw;
+            }
             context.Wait(MessageReceivedAsync);
         }
 

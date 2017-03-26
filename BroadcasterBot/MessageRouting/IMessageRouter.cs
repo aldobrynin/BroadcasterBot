@@ -5,6 +5,6 @@ namespace BroadcasterBot.MessageRouting
 {
     public interface IMessageRouter
     {
-        Task<bool> SendToAllUsers(IMessageActivity activity);
+        Task SendToAllUsers(IMessageActivity activity);
     }
 }
