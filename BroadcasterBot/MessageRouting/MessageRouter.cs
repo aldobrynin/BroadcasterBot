@@ -27,13 +27,19 @@ namespace BroadcasterBot.MessageRouting
                     {
                         var replyActivity = new Activity
                         {
-                            Type = ActivityTypes.Message,
-                            Text = activity.Text,
                             From = user.Bot,
                             Recipient = user.User,
                             ChannelId = user.ChannelId,
                             ServiceUrl = user.ServiceUrl,
-                            Conversation = user.Conversation
+                            Conversation = user.Conversation,
+                            Type = ActivityTypes.Message,
+                            Text = activity.Text,
+                            Attachments = activity.Attachments,
+                            AttachmentLayout = activity.AttachmentLayout,
+                            TextFormat = activity.TextFormat,
+                            Locale = activity.Locale,
+                            Summary = activity.Summary,
+                            Entities = activity.Entities
                         };
 
                         await client.Conversations.SendToConversationAsync(replyActivity, token);
