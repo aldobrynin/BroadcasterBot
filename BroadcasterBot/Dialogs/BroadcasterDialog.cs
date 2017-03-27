@@ -22,12 +22,7 @@ namespace BroadcasterBot.Dialogs
 
         public async Task StartAsync(IDialogContext context)
         {
-            var conversation = _repository.FindByUserIdAndChannelId(context.Activity.From.Id, context.Activity.ChannelId);
-            if (conversation != null)
-            {
-                conversation.IsBroadcaster = true;
-                _repository.AddUser(conversation);
-            }
+            _repository.SetBroadcaster(context.Activity.From.Id, context.Activity.ChannelId, true);
 
             await context.PostAsync("Let's broadcast!");
             context.Wait(OnMessageReceived);
@@ -38,13 +33,7 @@ namespace BroadcasterBot.Dialogs
             var activity = await result;
             if (activity.Text == "exit")
             {
-                var conversation = _repository.FindByUserIdAndChannelId(context.Activity.From.Id,
-                    context.Activity.ChannelId);
-                if (conversation != null)
-                {
-                    conversation.IsBroadcaster = false;
-                    _repository.AddUser(conversation);
-                }
+                _repository.SetBroadcaster(context.Activity.From.Id, context.Activity.ChannelId, false);
                 context.Done(true);
                 return;
             }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
+using Microsoft.Bot.Connector;
 
 namespace BroadcasterBot.Data
 {
@@ -22,14 +23,14 @@ namespace BroadcasterBot.Data
             GC.SuppressFinalize(this);
         }
 
-        public IEnumerable<SavedConversationDto> GetAllUsers()
+        public IEnumerable<ConversationReference> GetAllUsers()
         {
-            return _context.UsersConversations.Where(x => x.IsBroadcaster == false);
+            return _context.UsersConversations.Where(x => x.IsBroadcaster == false).ToArray().Select(Map);
         }
 
-        public void AddUser(SavedConversationDto conversation)
+        public void AddUser(ConversationReference conversation)
         {
-            _context.UsersConversations.AddOrUpdate(conversation);
+            _context.UsersConversations.AddOrUpdate(Map(conversation));
             _context.SaveChanges();
         }
 
@@ -45,9 +46,40 @@ namespace BroadcasterBot.Data
             _disposed = true;
         }
 
-        public SavedConversationDto FindByUserIdAndChannelId(string userId, string channelId)
+        private ConversationReference Map(SavedConversationDto dto)
         {
-            return _context.UsersConversations.SingleOrDefault(x => x.UserId == userId && x.ChannelId == channelId);
+            return new ConversationReference
+            {
+                ChannelId = dto.ChannelId,
+                User = new ChannelAccount(dto.UserId, dto.UserName),
+                ServiceUrl = dto.ServiceUrl,
+                Bot = new ChannelAccount(dto.BotId, dto.BotName),
+                Conversation = new ConversationAccount(dto.IsGroupConversation, dto.ConversationId, dto.ConversationName)
+            };
+        }
+        private SavedConversationDto Map(ConversationReference reference)
+        {
+            if (reference == null) return null;
+            return new SavedConversationDto
+            {
+                ChannelId = reference.ChannelId,
+                UserId = reference.User.Id,
+                UserName = reference.User.Name,
+                BotId = reference.Bot.Id,
+                BotName = reference.Bot.Name,
+                ConversationId = reference.Conversation.Id,
+                ConversationName = reference.Conversation.Name,
+                IsGroupConversation = reference.Conversation.IsGroup,
+                ServiceUrl = reference.ServiceUrl,
+            };
+        }
+
+        public void SetBroadcaster(string userId, string channelId, bool isBroadcaster)
+        {
+            var user = _context.UsersConversations.SingleOrDefault(x => x.UserId == userId && x.ChannelId == channelId);
+            if (user == null) return;
+            user.IsBroadcaster = isBroadcaster;
+            _context.SaveChanges();
         }
     }
 

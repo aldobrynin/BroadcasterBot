@@ -27,7 +27,7 @@ namespace BroadcasterBot.Dialogs
             var conversation = context.Activity.ToConversationReference();
             try
             {
-                _repository.AddUser(MapToDto(conversation));
+                _repository.AddUser(conversation);
             }
             catch (Exception e)
             {
@@ -35,19 +35,6 @@ namespace BroadcasterBot.Dialogs
                 throw;
             }
             context.Wait(MessageReceivedAsync);
-        }
-
-        private static SavedConversationDto MapToDto(ConversationReference conversation)
-        {
-            return new SavedConversationDto
-            {
-                ServiceUrl = conversation.ServiceUrl,
-                ChannelId = conversation.ChannelId,
-                ConversationId = conversation.Conversation.Id,
-                BotId = conversation.Bot.Id,
-                UserId = conversation.User.Id,
-                IsBroadcaster = false
-            };
         }
 
         private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> result)

@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using Microsoft.Bot.Connector;
 
 namespace BroadcasterBot.Data
 {
     public interface IUsersConversationsRepository
     {
-        IEnumerable<SavedConversationDto> GetAllUsers();
-        SavedConversationDto FindByUserIdAndChannelId(string userId, string channelId);
-        void AddUser(SavedConversationDto conversation);
+        IEnumerable<ConversationReference> GetAllUsers();
+        void AddUser(ConversationReference conversation);
+        void SetBroadcaster(string userId, string channelId, bool isBroadcaster);
     }
 }
