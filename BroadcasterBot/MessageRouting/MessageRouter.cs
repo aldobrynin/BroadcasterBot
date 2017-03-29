@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using BroadcasterBot.Data;
 using Microsoft.Bot.Connector;
@@ -16,36 +16,47 @@ namespace BroadcasterBot.MessageRouting
             _repository = repository;
         }
 
-        public async Task SendToAllUsers(IMessageActivity activity, CancellationToken token = default(CancellationToken))
+        public async Task SendToAllUsers(IMessageActivity activity)
         {
             var users = _repository.GetAllUsers();
-            foreach (var serviceUsers in users.GroupBy(x => x.ServiceUrl))
-            {
-                using (var client = new ConnectorClient(new Uri(serviceUsers.Key)))
-                {
-                    foreach (var user in serviceUsers)
-                    {
-                        var replyActivity = new Activity
-                        {
-                            From = user.Bot,
-                            Recipient = user.User,
-                            ChannelId = user.ChannelId,
-                            ServiceUrl = user.ServiceUrl,
-                            Conversation = user.Conversation,
-                            Type = ActivityTypes.Message,
-                            Text = activity.Text,
-                            Attachments = activity.Attachments,
-                            AttachmentLayout = activity.AttachmentLayout,
-                            TextFormat = activity.TextFormat,
-                            Locale = activity.Locale,
-                            Summary = activity.Summary,
-                            Entities = activity.Entities
-                        };
+            var tasks = users.Select(user => CreateTask(activity, user));
+            await Task.WhenAll(tasks);
+        }
 
-                        await client.Conversations.SendToConversationAsync(replyActivity, token);
-                    }
+        private async Task CreateTask(IMessageActivity activity, ConversationReference user)
+        {
+            try
+            {
+                using (var client = new ConnectorClient(new Uri(user.ServiceUrl)))
+                {
+                    var replyActivity = CreateReplyActivity(activity, user);
+                    await client.Conversations.SendToConversationAsync(replyActivity);
                 }
             }
+            catch (Exception e)
+            {
+                Trace.TraceError(e.Message);
+            }
+        }
+
+        private static Activity CreateReplyActivity(IMessageActivity activity, ConversationReference user)
+        {
+            return new Activity
+            {
+                From = user.Bot,
+                Recipient = user.User,
+                ChannelId = user.ChannelId,
+                ServiceUrl = user.ServiceUrl,
+                Conversation = user.Conversation,
+                Type = ActivityTypes.Message,
+                Text = activity.Text,
+                Attachments = activity.Attachments,
+                AttachmentLayout = activity.AttachmentLayout,
+                TextFormat = activity.TextFormat,
+                Locale = activity.Locale,
+                Summary = activity.Summary,
+                Entities = activity.Entities
+            };
         }
     }
 }
