@@ -49,13 +49,7 @@ namespace BroadcasterBot.MessageRouting
                 ServiceUrl = user.ServiceUrl,
                 Conversation = user.Conversation,
                 Type = ActivityTypes.Message,
-                Text = activity.Text,
-                Attachments = activity.Attachments,
-                AttachmentLayout = activity.AttachmentLayout,
-                TextFormat = activity.TextFormat,
-                Locale = activity.Locale,
-                Summary = activity.Summary,
-                Entities = activity.Entities
+                Text = activity.Text
             };
         }
     }
