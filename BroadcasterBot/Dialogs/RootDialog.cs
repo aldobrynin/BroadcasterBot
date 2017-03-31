@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using BroadcasterBot.Data;
+using BroadcasterBot.Dialogs.Broadcaster;
 using BroadcasterBot.Dialogs.Factory;
 using Microsoft.Bot.Builder.ConnectorEx;
 using Microsoft.Bot.Builder.Dialogs;

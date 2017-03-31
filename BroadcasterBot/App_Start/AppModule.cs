@@ -14,8 +14,11 @@ namespace BroadcasterBot
         {
             base.Load(builder);
             builder.RegisterType<RootDialog>().As<IDialog<object>>().InstancePerDependency();
-            builder.RegisterType<BroadcasterDialog>().AsSelf().InstancePerDependency();
-
+            builder.RegisterAssemblyTypes(typeof(RootDialog).Assembly)
+                .Except<RootDialog>()
+                .Where(t => typeof(IDialog<>).IsAssignableFrom(t) || typeof(IDialog).IsAssignableFrom(t))
+                .AsSelf()
+                .InstancePerDependency();
 
             builder
                 .RegisterType<DialogFactory>()
