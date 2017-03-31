@@ -23,6 +23,7 @@ namespace BroadcasterBot.Dialogs
         private async Task Resume(IDialogContext context, IAwaitable<bool> result)
         {
             var value = await result;
+            await context.PostAsync("thx 4 feedback");
             context.Done(value);
         }
     }
